@@ -1,0 +1,56 @@
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+const W=canvas.width,H=canvas.height;
+let score=0,lives=3,running=false;
+const player={x:W/2,y:H-30,w:36,h:18,spd:6};
+const bullets=[], bacteria=[], keys={};
+
+function spawn(){
+  const r=12+Math.random()*12;
+  bacteria.push({x:Math.random()*(W-2*r)+r,y:-r,r,vx:(Math.random()-0.5)*1.5,vy:1+Math.random()*1.2});
+}
+function reset(){score=0;lives=3;bacteria.length=0;bullets.length=0;running=true;}
+
+function loop(){ if(!running) return drawPause(); update(); draw(); requestAnimationFrame(loop);} 
+
+function update(){
+  if(keys['ArrowLeft']) player.x-=player.spd;
+  if(keys['ArrowRight']) player.x+=player.spd;
+  player.x=Math.max(0,Math.min(W-player.w,player.x));
+
+  bullets.forEach((b,i)=>{b.y-=8;if(b.y<-10) bullets.splice(i,1);});
+
+  if(Math.random()<0.03+Math.min(0.02,score*0.0008)) spawn();
+
+  for(let i=bacteria.length-1;i>=0;i--){
+    const b=bacteria[i];
+    b.x+=b.vx; b.y+=b.vy;
+    if(b.x<-30||b.x>W+30||b.y>H+30){bacteria.splice(i,1);continue;}
+
+    // bullet hit
+    for(let j=bullets.length-1;j>=0;j--){
+      const bl=bullets[j];
+      const dx=b.x-bl.x,dy=b.y-bl.y;
+      if(dx*dx+dy*dy < (b.r+4)*(b.r+4)){
+        score+=Math.round(10+b.r*2);
+        bacteria.splice(i,1); bullets.splice(j,1);
+        break;
+      }
+    }
+
+    // player hit
+    const px=player.x+player.w/2, py=player.y+player.h/2;
+    const dx=b.x-px,dy=b.y-py;
+    if(dx*dx+dy*dy<(b.r+12)*(b.r+12)){
+      lives--; bacteria.splice(i,1);
+      if(lives<=0) running=false;
+    }
+  }
+
+  document.getElementById('score').innerText='Score: '+score;
+  document.getElementById('lives').innerText='Lives: '+lives;
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#fff'; ctx.fillRect(player.x,
