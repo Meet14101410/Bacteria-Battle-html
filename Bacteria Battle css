@@ -1,0 +1,15 @@
+:root{--bg:#071019;--panel:#022;--accent:#39f;--muted:#9fd}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);color:#dff}
+.wrap{display:flex;flex-direction:column;align-items:center;padding:16px}
+canvas{width:100%;max-width:900px;height:auto;background:linear-gradient(#022,#013);border-radius:8px;display:block;box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+.hud{margin-top:8px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.hud div{background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:6px}
+button{padding:6px 10px;border-radius:8px;border:none;background:var(--accent);color:#fff;cursor:pointer;font-weight:600}
+button:active{transform:translateY(1px)}
+small{opacity:0.8}
+@media (max-width:480px){ .hud{font-size:13px} button{padding:6px 8px} }
+/* utility classes for in-game elements (optional) */
+.player{fill:#fff}
+.bacteria{fill:#7fce3a}
+.bullet{fill:#9ff}
